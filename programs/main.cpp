@@ -17,6 +17,7 @@
 #include "../src/postprocessor.h"
 #include "../src/binaryinteger.h"
 #include "../src/general.h"
+#include "../src/cli.h"
 
 using namespace std;
 
@@ -30,10 +31,28 @@ int main(int argc, char* argv[])
 {
     // Input
     string filename_graph;
-    bool print_treedecomposition = false;
-    filename_graph = argv[1];
-    int seed = stoi(argv[2]);
+    bool print_td = false;
+    int seed = 0;
 
+    // CLI dealings
+    vector<string> cliArguments;
+    for(int i = 1; i<argc; i++)
+        cliArguments.push_back(argv[i]);
+
+    int graphStatus = check_for_graph_file(cliArguments,filename_graph);
+    if(graphStatus==1)
+        return graphStatus;
+
+    int seedStatus = check_for_seed(cliArguments, seed);
+    if(seedStatus == 1)
+        return seedStatus;
+
+    //Check for options --print_td_filecontents=true
+    int optionStatus = check_for_options(cliArguments,print_td);
+    if(optionStatus==1)
+        return optionStatus;
+
+    ///////////////////////////////////////////////////////////////////////////
     Graph G = Graph::from_file(filename_graph);
 
     size_t max_degree = 0;
@@ -53,7 +72,7 @@ int main(int argc, char* argv[])
 
     //AddressablePriorityQueue<int, greater<int>,plus<int>> APQ(G.N.size());                        //MCS
     //AddressablePriorityQueue<int,less<int>,minus<int>> APQ(G.N.size());                           //MinDeg
-    AddressablePriorityQueue<float, greater<float>,plus<float>> APQ(G.N.size());                    //MaxDens
+    AddressablePriorityQueue<float,greater<float>,plus<float>> APQ(G.N.size());                    //MaxDens
 
     for(int i = 0; i< G.N.size(); i++)
     {
@@ -129,32 +148,18 @@ int main(int argc, char* argv[])
     sort(edges.begin(),edges.end());
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    size_t max_bag_size = 0;
-    for(int i = 0; i < G.N.size(); i++)
-        max_bag_size = max(max_bag_size,EMG.N[i].size());
-
-    ////////////////////////////////////////////////    Print .td format    //////////////////////////////////////////////////////////////////////////////////////
-    /*
-    cout << 's' << ' ' << "td" << ' ' << EMG.N.size() << ' ' << max_bag_size << ' ' << EMG.N.size() << endl;
-    for(int i = 0; i<G.N.size(); i++)
-    {
-        cout << 'b' << ' ' << i+1 << ' ';
-        print_vector(EMG.N[i]);
-    }
-    for(int i = 0;i<edges.size();i++)
-        cout << edges[i].first << " " << edges[i].second << endl;
-    */
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
     vector<vector<int>> ADJ(G.N.size());
-    for(int i = 0; i < edges.size(); i++)
+    for(size_t i = 0; i < edges.size(); i++)
     {
         ADJ[edges[i].first-1].push_back(edges[i].second);
         ADJ[edges[i].second-1].push_back(edges[i].first);
     }
+
+    ///////////////////////////////// TreeDecomposition(move(),move()) ///////////////////////////////////////////////////////////////////
+
     RootedTree RT(move(ADJ),1);
 
-    PostProcessor P(move(EMG.N),G);
+    PostProcessor P(EMG.N,G);
 
     for(int i = 0; i<G.N.size(); i++)
     {
@@ -168,24 +173,26 @@ int main(int argc, char* argv[])
     }
        
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    max_bag_size = 0;
-    for(int i = 0; i < G.N.size(); i++)
+    size_t max_bag_size = 0;
+    for(size_t i = 0; i < G.N.size(); i++)
         max_bag_size = max(max_bag_size,P.bags[i].size());
 
     ////////////////////////////////////////////////    Print .td format    //////////////////////////////////////////////////////////////////////////////////////
     cout << 's' << ' ' << "td" << ' ' << P.bags.size() << ' ' << max_bag_size << ' ' << P.bags.size() << endl;
-    //for(int i = 0; i < G.N.size(); i++)
-    //{
-    //    cout << 'b' << ' ' << i+1 << ' ';
-    //    print_vector(P.bags[i]);
-    //}
-    //for(int i = 0;i<edges.size();i++)
-    //    cout << edges[i].first << " " << edges[i].second << endl;
-
+    if(print_td == true)
+    {
+        for(size_t i = 0; i < G.N.size(); i++)
+        {
+            cout << 'b' << ' ' << i+1 << ' ';
+            print_vector(P.bags[i]);
+        }
+        for(size_t i = 0;i<edges.size(); i++)
+            cout << edges[i].first << " " << edges[i].second << endl;
+    }
     return 0;
 }
 
-//  NEEDS TO ADD current to the bag
+//   ADD current to the bag
 template<typename T>
 T key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
 {
@@ -197,7 +204,6 @@ T key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
     v.push_back(current);
     for(;i<EMG.N[current-1].size();i++)
         v.push_back(EMG.N[current-1][i]);
-    //vector<vector<int>> adjacency_matrix(v.size(),vector<int>(v.size(),0));
     T numerator = 0;
     for(int i = 0; i< v.size(); i++)
     {
@@ -223,34 +229,6 @@ T key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
     }
     else
         return numerator/denominator;
-    /*
-    //Set up validcandidates for current bag
-    vector<T> validcandidates(1,0);
-    for(int i = 0; i<S.bags[current-1].size(); i++)
-    {
-        int vSize = validcandidates.size();
-        validcandidates.push_back(T(1)<<i);
-        for(int index = 1; index<vSize; index++)
-        {
-            //add validcandidates[index]+(T(1)<<i) if it is an independent set
-            int j = countr_zero(validcandidates[index]);
-
-            if(
-                binary_search(validcandidates.begin(),    //CONSIDER DIFFERENT START AND END
-                    validcandidates.end(),
-                    validcandidates[index] + (T(1)<<i) - (T(1)<<j)) == true
-                    &&
-                    adjacency_matrix[i][j]==0
-            )
-            {
-                validcandidates.push_back(validcandidates[index]+(T(1)<<i));
-                //cout << current << ": " << validcandidates.size() << endl;
-            }
-        }
-    }
-    
-    validcandidates.size();
-    */
 }
 
 template<typename T>
@@ -264,7 +242,6 @@ T initial_key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
     v.push_back(current);
     for(;i<EMG.N[current-1].size();i++)
         v.push_back(EMG.N[current-1][i]);
-    //vector<vector<int>> adjacency_matrix(v.size(),vector<int>(v.size(),0));
     T numerator = 0;
     for(int i = 0; i< v.size(); i++)
     {
@@ -290,32 +267,4 @@ T initial_key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
     }
     else
         return numerator/denominator;
-    /*
-    //Set up validcandidates for current bag
-    vector<T> validcandidates(1,0);
-    for(int i = 0; i<S.bags[current-1].size(); i++)
-    {
-        int vSize = validcandidates.size();
-        validcandidates.push_back(T(1)<<i);
-        for(int index = 1; index<vSize; index++)
-        {
-            //add validcandidates[index]+(T(1)<<i) if it is an independent set
-            int j = countr_zero(validcandidates[index]);
-
-            if(
-                binary_search(validcandidates.begin(),    //CONSIDER DIFFERENT START AND END
-                    validcandidates.end(),
-                    validcandidates[index] + (T(1)<<i) - (T(1)<<j)) == true
-                    &&
-                    adjacency_matrix[i][j]==0
-            )
-            {
-                validcandidates.push_back(validcandidates[index]+(T(1)<<i));
-                //cout << current << ": " << validcandidates.size() << endl;
-            }
-        }
-    }
-    
-    validcandidates.size();
-    */
 }

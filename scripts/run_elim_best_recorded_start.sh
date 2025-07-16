@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for graph_file in ../data/complete_set/*.graph
+for graph_file in ../data/complete_set/ssmc*.graph
 do
     basename_file=$(basename "$graph_file")
     echo "${basename_file}:"
@@ -12,7 +12,7 @@ do
         if [[ -n "${start_vertex}" ]]
         then
             echo "Run with ${start_vertex}"
-            ../build/elimination "${graph_file}" "${start_vertex}" > "${td_file}" 
+            ../build/elimination "${graph_file}" "${start_vertex}" "--print_td=true" > "${td_file}" 
         fi
     fi
 done

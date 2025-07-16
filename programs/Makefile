@@ -12,6 +12,7 @@ LIBS =
 
 # Source and target
 SRC_FILES = \
+	$(SRC_DIR)/cli.cpp \
 	$(SRC_DIR)/graph.cpp \
     $(SRC_DIR)/edge_mutable_graph.cpp \
 	$(SRC_DIR)/rootedtree.cpp \

@@ -9,8 +9,8 @@
 
 using namespace std;
 
-PostProcessor::PostProcessor(vector<vector<int>>&& bags, const Graph& G)
-    : bags(move(bags)), G(G)
+PostProcessor::PostProcessor(vector<vector<int>>& bags, const Graph& G)
+    : bags(bags), G(G)
 {
 
 }

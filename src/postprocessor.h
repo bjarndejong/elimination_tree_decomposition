@@ -13,10 +13,10 @@ class PostProcessor
 public:
     std::vector<BinaryInteger> c;//std::vector<__uint128_t> c;
     std::vector<int> keep;
-    std::vector<std::vector<int>> bags;
+    std::vector<std::vector<int>>& bags;
     const Graph& G;
 
-    PostProcessor(std::vector<std::vector<int>>&& bags, const Graph& G);
+    PostProcessor(std::vector<std::vector<int>>& bags, const Graph& G);
 
     void setup(RootedTree& RT);
     void discover(const int current, RootedTree& RT);

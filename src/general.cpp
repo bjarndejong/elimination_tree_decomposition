@@ -11,3 +11,5 @@ void print_vector(const vector<int>& v)
         cout << v[i] << ' ';
     cout << endl;
 }
+
+//void insert_unique_value(vector<int>& input, int unique_value, vector<int>& output);
