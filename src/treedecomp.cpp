@@ -11,7 +11,7 @@
 
 using namespace std;
 
-TreeDecomp::TreeDecomp(std::vector<std::vector<int>>&& N, std::vector<std::vector<int>>&& bags)
+TreeDecomp::TreeDecomp(vector<vector<int>>&& N, vector<vector<int>>&& bags)
     :N(move(N)), bags(move(bags))
 {
 

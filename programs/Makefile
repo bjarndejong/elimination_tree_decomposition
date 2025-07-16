@@ -14,8 +14,10 @@ LIBS =
 SRC_FILES = \
 	$(SRC_DIR)/graph.cpp \
     $(SRC_DIR)/edge_mutable_graph.cpp \
-    $(SRC_DIR)/test.cpp \
-	$(SRC_DIR)/rootedtree.cpp $(SRC_DIR)/postprocessor.cpp $(SRC_DIR)/binaryinteger.cpp
+	$(SRC_DIR)/rootedtree.cpp \
+	$(SRC_DIR)/postprocessor.cpp \
+	$(SRC_DIR)/binaryinteger.cpp \
+	$(SRC_DIR)/general.cpp
 
 TARGET = $(BUILD_DIR)/elimination
 

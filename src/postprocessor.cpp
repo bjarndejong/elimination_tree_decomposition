@@ -9,8 +9,8 @@
 
 using namespace std;
 
-PostProcessor::PostProcessor(vector<vector<int>> bags, const Graph& G)
-    : bags(std::move(bags)), G(G)
+PostProcessor::PostProcessor(vector<vector<int>>&& bags, const Graph& G)
+    : bags(move(bags)), G(G)
 {
 
 }
@@ -35,8 +35,7 @@ void PostProcessor::discover(const int current, RootedTree& RT)
                 j++;
             if(j < bags[current-1].size() && bags[current-1][j] == G.N[RT.root-1][i])
                 c[current-1].set_bit(i);//c[current-1] |= static_cast<__uint128_t>(1) << i;
-        }
-        //cout << c[current-1] << endl; 
+        } 
     }
     else
     {
@@ -65,7 +64,6 @@ void PostProcessor::finish(const int current, RootedTree& RT)
         }
     }
 }
-
 
 void PostProcessor::cleanup(RootedTree& RT)
 {

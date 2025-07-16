@@ -16,12 +16,9 @@
 #include "../src/treedecomp.h"
 #include "../src/postprocessor.h"
 #include "../src/binaryinteger.h"
+#include "../src/general.h"
 
 using namespace std;
-
-// Forward declarations
-void print_vector(vector<int>& v);
-void print_vector(const vector<int>& v);
 
 template<typename T>
 T key_value(EdgeMutableGraph& EMG, const Graph& G, int current);
@@ -188,23 +185,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void print_vector(vector<int>& v)
-{
-    for(int i = 0; i< v.size(); i++)
-        cout << v[i] << ' ';
-    cout << endl;
-}
-
-void print_vector(const vector<int>& v)
-{
-    for(int i = 0; i< v.size(); i++)
-        cout << v[i] << ' ';
-    cout << endl;
-}
-
-//  NEEDS TO ADD current to the bag/ also better as introduce and remove
-//Set up adjacency matrix for current bag
-
+//  NEEDS TO ADD current to the bag
 template<typename T>
 T key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
 {

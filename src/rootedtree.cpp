@@ -5,12 +5,12 @@
 using namespace std;
 
 //Order of initialization list relevant, therefore odd naming, something about -Wreorder
-RootedTree::RootedTree(const vector<vector<int>> ADJ, int root) : N(move(ADJ)), root(root), number_of_nodes(ADJ.size())
+RootedTree::RootedTree(vector<vector<int>>&& ADJ, int root) : N(move(ADJ)), root(root)
 {
-                                                                                    //setup(*this);
+    size_t number_of_nodes = N.size();                                                                          //setup(*this);
     parents.resize(number_of_nodes);
     neighbourIterators.resize(number_of_nodes);
-    for(int index = 0; index<number_of_nodes; index++)
+    for(size_t index = 0; index<number_of_nodes; index++)
         neighbourIterators[index] = N[index].begin();
 
     //Initialize
@@ -43,7 +43,7 @@ RootedTree::RootedTree(const vector<vector<int>> ADJ, int root) : N(move(ADJ)), 
             parent = parents[current-1];
         }
     }
-    for(int i = 0; i<number_of_nodes; i++)                                              //cleanup(*this);
+    for(size_t i = 0; i<number_of_nodes; i++)                                              //cleanup(*this);
         neighbourIterators[i] = N[i].begin();
 }
 

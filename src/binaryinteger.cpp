@@ -2,7 +2,7 @@
 
 using namespace std;
 
-std::size_t BinaryInteger::number_of_blocks = 0;
+size_t BinaryInteger::number_of_blocks = 0;
 
 void BinaryInteger::set_number_of_blocks(size_t number_of_bits)     // Static
 {

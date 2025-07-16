@@ -6,7 +6,6 @@
 #include <cassert>
 
 #include "graph.h"
-#include "test.h"
 
 using namespace std;
 

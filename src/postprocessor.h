@@ -16,7 +16,7 @@ public:
     std::vector<std::vector<int>> bags;
     const Graph& G;
 
-    PostProcessor(std::vector<std::vector<int>> bags, const Graph& G);
+    PostProcessor(std::vector<std::vector<int>>&& bags, const Graph& G);
 
     void setup(RootedTree& RT);
     void discover(const int current, RootedTree& RT);

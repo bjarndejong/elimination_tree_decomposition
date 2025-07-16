@@ -9,7 +9,7 @@ set -e
 total_limit_sec=$((30 * 60))
 
 graph_basename=$1
-graph_file="../data/complete_set/${graph_basename}.graph"
+graph_file="../data/complete_set_reduced/${graph_basename}.graph"
 num_vertices=$(head -n 1 "$graph_file" | awk '{print $1}')
 num_edges=$(head -n 1 "$graph_file" | awk '{print $2}')
 

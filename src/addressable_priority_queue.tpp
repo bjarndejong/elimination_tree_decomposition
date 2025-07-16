@@ -19,7 +19,6 @@ void AddressablePriorityQueue<T, Compare, Adjust>::updateKey(int current, T valu
     siftUp(p[current-1]);
 }
 
-
 template<typename T, typename Compare, typename Adjust>
 void AddressablePriorityQueue<T, Compare, Adjust>::siftUp(int index)
 {
@@ -96,22 +95,6 @@ void AddressablePriorityQueue<T, Compare, Adjust>::insertElement(int current, T 
 }
 
 template<typename T, typename Compare, typename Adjust>
-void AddressablePriorityQueue<T, Compare, Adjust>::print() const
-{
-    int line = 2;
-    for(size_t i = 0; i < v.size(); i++)
-    {
-        cout << v[i].first << '(' << v[i].second << ')' << ' ';
-        if(i == line-2 && v.size()-1 != i)
-        {
-            line*=2;
-            cout << endl;
-        }
-    }
-    cout << endl;
-}
-
-template<typename T, typename Compare, typename Adjust>
 int AddressablePriorityQueue<T, Compare, Adjust>::deleteRoot()
 {
     assert(!v.empty());
@@ -126,4 +109,20 @@ int AddressablePriorityQueue<T, Compare, Adjust>::deleteRoot()
     if(v.size()>0)
         siftDown(0);
     return root;
+}
+
+template<typename T, typename Compare, typename Adjust>
+void AddressablePriorityQueue<T, Compare, Adjust>::print() const
+{
+    int line = 2;
+    for(size_t i = 0; i < v.size(); i++)
+    {
+        cout << v[i].first << '(' << v[i].second << ')' << ' ';
+        if(i == line-2 && v.size()-1 != i)
+        {
+            line*=2;
+            cout << endl;
+        }
+    }
+    cout << endl;
 }
