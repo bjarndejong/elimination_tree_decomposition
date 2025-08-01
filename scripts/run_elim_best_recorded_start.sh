@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for graph_file in ../data/complete_set/ssmc*.graph
+for graph_file in ../data/test_set/*.graph
 do
     basename_file=$(basename "$graph_file")
     echo "${basename_file}:"

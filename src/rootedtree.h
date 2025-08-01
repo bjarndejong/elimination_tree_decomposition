@@ -7,6 +7,8 @@
 
 class RootedTree
 {
+private:
+    void initialize();
 public:
     const std::vector<std::vector<int>> N;
     int root;
@@ -16,6 +18,8 @@ public:
 
     //Order of initialization list relevant, therefore odd naming
     RootedTree(std::vector<std::vector<int>>&& ADJ, int root);
+    RootedTree(const std::vector<std::vector<int>>& ADJ, int root);
+    RootedTree(const RootedTree& other);
 
     /*
     void df_traversal(
@@ -35,6 +39,8 @@ public:
 
 
     void reroot(const int newroot);
+
+    void print() const;
 };
 
 #include "rootedtree.tpp"

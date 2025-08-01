@@ -6,6 +6,7 @@
 #include <cassert>
 
 #include "graph.h"
+#include "treedecomp.h"
 
 using namespace std;
 

@@ -2,10 +2,35 @@
 
 #include <vector>
 
+#include "general.h"
+
 using namespace std;
 
 //Order of initialization list relevant, therefore odd naming, something about -Wreorder
+// Move constructor
 RootedTree::RootedTree(vector<vector<int>>&& ADJ, int root) : N(move(ADJ)), root(root)
+{
+    initialize();
+}
+
+// Copy constructor
+RootedTree::RootedTree(const vector<vector<int>>& ADJ, int root) : N(ADJ), root(root)
+{
+    initialize();
+}
+
+// Copy-assign constructor
+RootedTree::RootedTree(const RootedTree& other)
+    : N(other.N),
+      parents(other.parents),
+      root(other.root)
+{
+    neighbourIterators.resize(N.size());
+    for (size_t i = 0; i < N.size(); ++i)
+        neighbourIterators[i] = N[i].begin();
+}
+
+void RootedTree::initialize()
 {
     size_t number_of_nodes = N.size();                                                                          //setup(*this);
     parents.resize(number_of_nodes);
@@ -110,4 +135,10 @@ void RootedTree::reroot(const int newroot)
     parents[newroot-1] = newroot;
 
     root = newroot;
+}
+
+void RootedTree::print() const
+{
+    for(int i = 0; i<N.size(); i++)
+        print_vector(N[i]);
 }

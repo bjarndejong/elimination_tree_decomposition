@@ -55,20 +55,11 @@ int main(int argc, char* argv[])
     ///////////////////////////////////////////////////////////////////////////
     Graph G = Graph::from_file(filename_graph);
 
-    size_t max_degree = 0;
-    for(int i = 0; i<G.N.size(); i++)
-    {
-        max_degree = max(max_degree,G.N[i].size());
-    }
-    BinaryInteger::set_number_of_blocks(max_degree);
-
-    EdgeMutableGraph EMG(G);
-
     vector<int> position_in_elimination_order(G.N.size(),-1);
     vector<int> elimination_order(G.N.size(),-1);
-    vector<pair<int,int>> edges;
 
- 
+
+    EdgeMutableGraph EMG(G);
 
     //AddressablePriorityQueue<int, greater<int>,plus<int>> APQ(G.N.size());                        //MCS
     //AddressablePriorityQueue<int,less<int>,minus<int>> APQ(G.N.size());                           //MinDeg
@@ -107,7 +98,8 @@ int main(int argc, char* argv[])
                     key_value<float>(EMG,G,EMG.N[current-1][j]) - APQ.v[APQ.p[EMG.N[current-1][j]-1]].second);  //MaxDens
         }
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    vector<pair<int,int>> edges;
     for(int i = 0; i < G.N.size(); i++)
     {
         int least_order = G.N.size();
@@ -164,6 +156,8 @@ int main(int argc, char* argv[])
     for(int i = 0; i<G.N.size(); i++)
     {
         RT.reroot(i+1);
+        P.vertex_to_trim = i + 1;
+        BinaryInteger::set_number_of_blocks(G.N[i+1 - 1].size());
         RT.df_traversal(
             bind(&PostProcessor::setup, &P, placeholders::_1),
             bind(&PostProcessor::discover, &P, placeholders::_1, placeholders::_2),
@@ -260,7 +254,7 @@ T initial_key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
 
         }
     }
-    T denominator = v.size()*v.size(); //(v.size()-1);
+    T denominator = v.size()*v.size(); //v.size()*(v.size()-1);
     if(v.size()-1 == 0 || numerator == v.size()*(v.size()-1))
     {
         return T(2);

@@ -5,6 +5,7 @@
 
 #include "graph.h"
 #include "rootedtree.h"
+#include "treedecomp.h"
 
 class EdgeMutableGraph
 {

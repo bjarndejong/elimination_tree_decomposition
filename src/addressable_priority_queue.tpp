@@ -13,8 +13,8 @@ AddressablePriorityQueue<T, Compare, Adjust>::AddressablePriorityQueue(int n)
 template<typename T, typename Compare, typename Adjust>
 void AddressablePriorityQueue<T, Compare, Adjust>::updateKey(int current, T value)
 {
-    assert(p[current-1] != -1);
-    assert(p[current-1] < v.size());
+    //assert(p[current-1] != -1);
+    //assert(p[current-1] < v.size());
     v[p[current-1]].second = adjust(v[p[current-1]].second, value);
     siftUp(p[current-1]);
 }
@@ -22,7 +22,7 @@ void AddressablePriorityQueue<T, Compare, Adjust>::updateKey(int current, T valu
 template<typename T, typename Compare, typename Adjust>
 void AddressablePriorityQueue<T, Compare, Adjust>::siftUp(int index)
 {
-    if(index>0)
+    while(index>0)
     {
         int parentIndex = (index-1)/2;
         if(comp(v[index].second,v[parentIndex].second))
@@ -32,16 +32,33 @@ void AddressablePriorityQueue<T, Compare, Adjust>::siftUp(int index)
                  p[v[index].first - 1],
                  p[v[parentIndex].first - 1]
                  );
-            siftUp(parentIndex);
+            index = parentIndex;
         }
+        else
+            break;
     }
 }
 
 template<typename T, typename Compare, typename Adjust>
 void AddressablePriorityQueue<T, Compare, Adjust>::siftDown(int index)
 {
-    int indexLeftChild = 2*index + 1;
-    int indexRightChild = 2*index + 2;
+    while(true)
+    {
+        int indexLeftChild = (index<<1) + 1;
+        int indexRightChild = (index<<1) + 2;
+        int indexBest = index;
+        if(indexLeftChild<v.size() && comp(v[indexLeftChild].second,v[indexBest].second))
+            indexBest = indexLeftChild;
+        if(indexRightChild < v.size() && comp(v[indexRightChild].second,v[indexBest].second))
+            indexBest = indexRightChild;
+        if(indexBest == index)
+            break;
+        swap(v[indexBest],v[index]);
+        swap(p[v[indexBest].first - 1], p[v[index].first - 1]);
+        index = indexBest;
+    }
+}
+    /*
     if(indexLeftChild<=v.size()-1)
     {
         if(indexRightChild<=v.size()-1)
@@ -84,7 +101,9 @@ void AddressablePriorityQueue<T, Compare, Adjust>::siftDown(int index)
             }
         }
     }
+
 }
+*/
 
 template<typename T, typename Compare, typename Adjust>
 void AddressablePriorityQueue<T, Compare, Adjust>::insertElement(int current, T key)
