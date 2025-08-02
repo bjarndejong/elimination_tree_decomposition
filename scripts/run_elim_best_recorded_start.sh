@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for graph_file in ../data/test_set/*.graph
+GROUP_NAME=$1
+
+for graph_file in ../data/complete_set/"${GROUP_NAME}"*.graph
 do
     basename_file=$(basename "$graph_file")
     echo "${basename_file}:"

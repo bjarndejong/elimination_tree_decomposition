@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     vector<int> elimination_order(G.N.size(),-1);
 
 
-    EdgeMutableGraph EMG(G);
+    EdgeMutableGraph EMG(G);                                                                    // Copy of G whose edges we can mutate
 
     //AddressablePriorityQueue<int, greater<int>,plus<int>> APQ(G.N.size());                        //MCS
     //AddressablePriorityQueue<int,less<int>,minus<int>> APQ(G.N.size());                           //MinDeg
@@ -134,8 +134,10 @@ int main(int argc, char* argv[])
 
     for(int i = 0; i<G.N.size(); i++)
     {
-        EMG.N[i].push_back(i+1);
-        sort(EMG.N[i].begin(),EMG.N[i].end());
+        auto it = lower_bound(EMG.N[i].begin(),EMG.N[i].end(),i+1);
+        EMG.N[i].insert(it, i+1);
+        //EMG.N[i].push_back(i+1);
+        //sort(EMG.N[i].begin(),EMG.N[i].end());
     }
     sort(edges.begin(),edges.end());
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
