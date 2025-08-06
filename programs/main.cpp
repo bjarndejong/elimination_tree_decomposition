@@ -99,7 +99,8 @@ int main(int argc, char* argv[])
         }
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    vector<pair<int,int>> edges;
+    //vector<pair<int,int>> edges;
+    vector<vector<int>> ADJ(G.N.size());
     for(int i = 0; i < G.N.size(); i++)
     {
         int least_order = G.N.size();
@@ -114,20 +115,24 @@ int main(int argc, char* argv[])
         }
         if(neighbour!=G.N.size()+1)
         {   
-            if(i+1 < neighbour)
-                edges.push_back({i+1,neighbour});
-            else
-                edges.push_back({neighbour,i+1});
+            //if(i+1 < neighbour)
+            //    edges.push_back({i+1,neighbour});
+            //else
+            //    edges.push_back({neighbour,i+1});
+            ADJ[i+1 - 1].push_back(neighbour);
+            ADJ[neighbour - 1].push_back(i+1);
         }
         else
         {
             if(i+1!=elimination_order.back())
             {
                 neighbour = elimination_order.back();
-                if(i+1 < neighbour)
-                    edges.push_back({i+1,neighbour});
-                else
-                    edges.push_back({neighbour,i+1});
+                //if(i+1 < neighbour)
+                //    edges.push_back({i+1,neighbour});
+                //else
+                //    edges.push_back({neighbour,i+1});
+                ADJ[i+1 - 1].push_back(neighbour);
+                ADJ[neighbour - 1].push_back(i+1);
             }
         }
     }
@@ -139,15 +144,15 @@ int main(int argc, char* argv[])
         //EMG.N[i].push_back(i+1);
         //sort(EMG.N[i].begin(),EMG.N[i].end());
     }
-    sort(edges.begin(),edges.end());
+    //sort(edges.begin(),edges.end());
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    vector<vector<int>> ADJ(G.N.size());
-    for(size_t i = 0; i < edges.size(); i++)
-    {
-        ADJ[edges[i].first-1].push_back(edges[i].second);
-        ADJ[edges[i].second-1].push_back(edges[i].first);
-    }
+    //vector<vector<int>> ADJ(G.N.size());
+    //for(size_t i = 0; i < edges.size(); i++)
+    //{
+    //    ADJ[edges[i].first-1].push_back(edges[i].second);
+    //    ADJ[edges[i].second-1].push_back(edges[i].first);
+    //}
 
     ///////////////////////////////// TreeDecomposition(move(),move()) ///////////////////////////////////////////////////////////////////
 
@@ -182,8 +187,18 @@ int main(int argc, char* argv[])
             cout << 'b' << ' ' << i+1 << ' ';
             print_vector(P.bags[i]);
         }
-        for(size_t i = 0;i<edges.size(); i++)
-            cout << edges[i].first << " " << edges[i].second << endl;
+        for(int i = 0; i<RT.N.size(); i++)
+        {
+            for(int j = 0; j<RT.N[i].size(); j++)
+            {
+                if(i+1 < RT.N[i][j])
+                {
+                    cout << i+1 << " " << RT.N[i][j] << endl;
+                }
+            }
+        }
+        //for(size_t i = 0;i<edges.size(); i++)
+        //    cout << edges[i].first << " " << edges[i].second << endl;
     }
     return 0;
 }
@@ -214,10 +229,11 @@ T key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
             while(k<G.N[v[i]-1].size() && G.N[v[i]-1][k] < v[j])
                 k++;
             if(k<G.N[v[i]-1].size() && G.N[v[i]-1][k] == v[j])
-                numerator+=2;
+                numerator++;
 
         }
     }
+    numerator*=2;
     T denominator = v.size()*v.size(); //(v.size()-1);
     if(v.size()-1 == 0 || numerator == v.size()*(v.size()-1))
     {
@@ -252,10 +268,11 @@ T initial_key_value(EdgeMutableGraph& EMG, const Graph& G, int current)
             while(k<G.N[v[i]-1].size() && G.N[v[i]-1][k] < v[j])
                 k++;
             if(k<G.N[v[i]-1].size() && G.N[v[i]-1][k] == v[j])
-                numerator+=2;
+                numerator++;
 
         }
     }
+    numerator*=2;
     T denominator = v.size()*v.size(); //v.size()*(v.size()-1);
     if(v.size()-1 == 0 || numerator == v.size()*(v.size()-1))
     {
